@@ -30,9 +30,9 @@ public class BookController {
 
     // POST - add a book
     @PostMapping
-    public String addBook(@RequestBody Book book) {
+    public ResponseEntity<String> addBook(@RequestBody Book book) {
         books.add(new Book(nextId++, book.getTitle(), book.getAuthor()));
-        return "Book added successfully!";
+        return ResponseEntity.status(201).body("book added scuessfully");
     }
 
     // DELETE a book
