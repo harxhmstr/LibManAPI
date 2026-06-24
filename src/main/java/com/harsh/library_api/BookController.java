@@ -16,7 +16,6 @@ public class BookController {
     // GET all books
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
-    		if(books.size()==0) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(books);
     }
 
