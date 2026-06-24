@@ -2,6 +2,8 @@ package com.harsh.library_api;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,17 +15,18 @@ public class BookController {
 
     // GET all books
     @GetMapping
-    public List<Book> getAllBooks() {
-        return books;
+    public ResponseEntity<List<Book>> getAllBooks() {
+    		if(books.size()==0) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(books);
     }
 
     // GET one book by id
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable int id) {
+    public ResponseEntity<Book> getBook(@PathVariable int id) {
         for(Book b : books) {
-            if(b.getId() == id) return b;
+            if(b.getId() == id) return ResponseEntity.ok(b);
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
 
     // POST - add a book
@@ -35,8 +38,23 @@ public class BookController {
 
     // DELETE a book
     @DeleteMapping("/{id}")
-    public String deleteBook(@PathVariable int id) {
-        books.removeIf(b -> b.getId() == id);
-        return "Book deleted!";
+    public ResponseEntity<String> deleteBook(@PathVariable int id) {
+        if(books.removeIf(b -> b.getId() == id)) {
+        		return ResponseEntity.ok("Book deleted");
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    //UPDATE a book
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateBook(@PathVariable int id,@RequestBody Book book) {
+    		for(Book b:books){
+    			if(b.getId()==id) {
+    				b.setTitle(book.getTitle());
+    				b.setAuthor(book.getAuthor());
+    				return ResponseEntity.ok("Book updated successfully!!!");
+    			}	
+    		}
+    		return ResponseEntity.notFound().build();
     }
 }
